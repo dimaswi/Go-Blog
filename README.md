@@ -1,6 +1,6 @@
-# SIMRS - Sistem Informasi Manajemen Rumah Sakit
+# StarterKits - Fullstack Starter Template
 
-Aplikasi fullstack untuk manajemen rumah sakit dengan **Golang (Gin + GORM)** backend dan **React TypeScript** frontend. Dilengkapi dengan autentikasi JWT dan RBAC (Role-Based Access Control).
+Aplikasi fullstack starter template dengan **Golang (Gin + GORM)** backend dan **React TypeScript** frontend. Dilengkapi dengan autentikasi JWT dan RBAC (Role-Based Access Control).
 
 ## ✨ Features
 
@@ -77,7 +77,7 @@ Pastikan sudah terinstall:
 
 ```powershell
 git clone <repository-url>
-cd SIMRS
+cd Go-Starter
 ```
 
 ### 2. Setup Database PostgreSQL
@@ -85,9 +85,9 @@ cd SIMRS
 Buat database baru dengan menjalankan perintah SQL berikut:
 
 ```sql
-CREATE DATABASE simrs;
-CREATE USER simrs WITH PASSWORD 'simrs123';
-GRANT ALL PRIVILEGES ON DATABASE simrs TO simrs;
+CREATE DATABASE starter;
+CREATE USER starter WITH PASSWORD 'starter123';
+GRANT ALL PRIVILEGES ON DATABASE starter TO starter;
 ```
 
 ### 3. Setup Backend
@@ -132,7 +132,7 @@ Setelah semua berjalan, akses aplikasi di browser:
 - **Backend API:** http://localhost:8080/api
 
 **Default Login Credentials:**
-- Email: `admin@simrs.com`
+- Email: `admin@starter.com`
 - Password: `admin123`
 
 ## 📁 Struktur Project
@@ -140,7 +140,7 @@ Setelah semua berjalan, akses aplikasi di browser:
 ## 📁 Struktur Project
 
 ```
-SIMRS/
+Go-Starter/
 ├── backend/
 │   ├── config/           # Konfigurasi aplikasi
 │   ├── database/         # Database connection & migrations
@@ -257,8 +257,8 @@ Contoh:
 - Support untuk semua komponen
 
 ### Application Branding
-- Customizable application name (default: SIMRS)
-- Customizable subtitle (default: Hospital System)
+- Customizable application name (default: StarterKits)
+- Customizable subtitle (default: Starter Template)
 - Changes reflect immediately in sidebar
 - Dynamic page titles (format: "Page Name - App Name")
 
@@ -293,8 +293,8 @@ Contoh:
 ### Backend
 ```powershell
 cd backend
-go build -o simrs-backend.exe
-./simrs-backend.exe
+go build -o starter-backend.exe
+./starter-backend.exe
 ```
 
 ### Frontend
