@@ -37,6 +37,9 @@ func main() {
 	// Setup Gin router
 	r := gin.Default()
 
+	// Serve static files for uploads
+	r.Static("/uploads", "./uploads")
+
 	// CORS middleware
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:3000"},
@@ -60,6 +63,7 @@ func main() {
 
 			// Settings routes
 			protected.PUT("/settings", handlers.UpdateSettings)
+			protected.POST("/settings/upload", handlers.UploadLogo)
 
 			// Users routes (with RBAC)
 			protected.GET("/users", middleware.RequirePermission("users.view"), handlers.GetUsers)

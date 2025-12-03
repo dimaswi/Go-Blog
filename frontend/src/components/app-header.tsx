@@ -1,6 +1,9 @@
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+import { Moon, Sun } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,6 +16,32 @@ import {
 export function AppHeader() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  // Load theme on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    if (savedTheme) {
+      setTheme(savedTheme);
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
   
   // Generate breadcrumb from current path
   const pathSegments = location.pathname.split('/').filter(Boolean);
@@ -31,7 +60,7 @@ export function AppHeader() {
 
   return (
     <header className="sticky top-0 z-50 flex h-14 shrink-0 items-center gap-2 border-b rounded-xl bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-1">
         <SidebarTrigger className="h-7 w-7" />
         <Separator orientation="vertical" className="h-4" />
         <Breadcrumb>
@@ -57,6 +86,21 @@ export function AppHeader() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
+      
+      {/* Theme Toggle */}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={toggleTheme}
+        className="h-8 w-8"
+      >
+        {theme === 'light' ? (
+          <Moon className="h-4 w-4" />
+        ) : (
+          <Sun className="h-4 w-4" />
+        )}
+        <span className="sr-only">Toggle theme</span>
+      </Button>
     </header>
   );
 }

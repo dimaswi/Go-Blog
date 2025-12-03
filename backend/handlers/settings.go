@@ -1,9 +1,14 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
 	"starter/backend/database"
 	"starter/backend/models"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -59,4 +64,72 @@ func UpdateSettings(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Settings updated successfully"})
+}
+
+// UploadLogo handles logo/icon upload
+func UploadLogo(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No file uploaded"})
+		return
+	}
+
+	// Get upload type (logo or favicon)
+	uploadType := c.PostForm("type")
+	if uploadType != "logo" && uploadType != "favicon" {
+		uploadType = "logo"
+	}
+
+	// Validate file type
+	ext := strings.ToLower(filepath.Ext(file.Filename))
+	allowedExts := map[string]bool{".png": true, ".jpg": true, ".jpeg": true, ".ico": true, ".svg": true}
+	if !allowedExts[ext] {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid file type. Allowed: png, jpg, jpeg, ico, svg"})
+		return
+	}
+
+	// Create uploads directory if not exists
+	uploadDir := "./uploads"
+	if err := os.MkdirAll(uploadDir, 0755); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})
+		return
+	}
+
+	// Generate unique filename
+	filename := fmt.Sprintf("%s_%d%s", uploadType, time.Now().UnixNano(), ext)
+	filePath := filepath.Join(uploadDir, filename)
+
+	// Save file
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+
+	// Save to settings
+	settingKey := "app_" + uploadType
+	fileURL := "/uploads/" + filename
+
+	var setting models.Setting
+	result := database.DB.Where("key = ?", settingKey).First(&setting)
+
+	if result.Error != nil {
+		setting = models.Setting{
+			Key:   settingKey,
+			Value: fileURL,
+		}
+		database.DB.Create(&setting)
+	} else {
+		// Delete old file if exists
+		if setting.Value != "" {
+			oldPath := "." + setting.Value
+			os.Remove(oldPath)
+		}
+		setting.Value = fileURL
+		database.DB.Save(&setting)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "File uploaded successfully",
+		"url":     fileURL,
+	})
 }
