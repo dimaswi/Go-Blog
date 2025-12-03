@@ -22,12 +22,15 @@ func Connect(dsn string) error {
 }
 
 func Migrate() error {
+	// Auto-migrate all models with proper order for foreign key dependencies
 	err := DB.AutoMigrate(
-		&models.User{},
-		&models.Role{},
-		&models.Permission{},
-		&models.Setting{},
+		&models.Role{},           // First, roles
+		&models.Permission{},     // Then permissions
+		&models.RolePermission{}, // Junction table
+		&models.User{},           // Then users (depends on roles)
+		&models.Setting{},        // Finally settings
 	)
+
 	if err != nil {
 		return err
 	}
@@ -36,17 +39,49 @@ func Migrate() error {
 	return SeedData()
 }
 
+// CleanMigrate drops all tables and recreates them for fresh database structure
+func CleanMigrate() error {
+	// Drop tables in reverse order to handle foreign key constraints
+	DB.Exec("DROP TABLE IF EXISTS role_permissions CASCADE")
+	DB.Exec("DROP TABLE IF EXISTS users CASCADE")
+	DB.Exec("DROP TABLE IF EXISTS permissions CASCADE")
+	DB.Exec("DROP TABLE IF EXISTS roles CASCADE")
+	DB.Exec("DROP TABLE IF EXISTS settings CASCADE")
+
+	log.Println("Dropped existing tables for clean migration")
+
+	// Now run normal migration
+	return Migrate()
+}
+
 func SeedData() error {
-	// Create default permissions
+	// Seed granular permissions that match frontend permission checks
 	permissions := []models.Permission{
-		{Name: "users.read", Resource: "users", Action: "read", Description: "View users"},
-		{Name: "users.create", Resource: "users", Action: "create", Description: "Create users"},
-		{Name: "users.update", Resource: "users", Action: "update", Description: "Update users"},
-		{Name: "users.delete", Resource: "users", Action: "delete", Description: "Delete users"},
-		{Name: "roles.read", Resource: "roles", Action: "read", Description: "View roles"},
-		{Name: "roles.create", Resource: "roles", Action: "create", Description: "Create roles"},
-		{Name: "roles.update", Resource: "roles", Action: "update", Description: "Update roles"},
-		{Name: "roles.delete", Resource: "roles", Action: "delete", Description: "Delete roles"},
+		// Users Management
+		{Name: "users.view", Module: "User Management", Category: "Users", Description: "View users list and details", Actions: `["read"]`},
+		{Name: "users.create", Module: "User Management", Category: "Users", Description: "Create new users", Actions: `["create"]`},
+		{Name: "users.update", Module: "User Management", Category: "Users", Description: "Update existing users", Actions: `["update"]`},
+		{Name: "users.delete", Module: "User Management", Category: "Users", Description: "Delete users", Actions: `["delete"]`},
+
+		// Roles Management
+		{Name: "roles.view", Module: "Role Management", Category: "Roles", Description: "View roles list and details", Actions: `["read"]`},
+		{Name: "roles.create", Module: "Role Management", Category: "Roles", Description: "Create new roles", Actions: `["create"]`},
+		{Name: "roles.update", Module: "Role Management", Category: "Roles", Description: "Update existing roles", Actions: `["update"]`},
+		{Name: "roles.delete", Module: "Role Management", Category: "Roles", Description: "Delete roles", Actions: `["delete"]`},
+		{Name: "roles.assign_permissions", Module: "Role Management", Category: "Roles", Description: "Assign permissions to roles", Actions: `["assign"]`},
+
+		// Permissions Management
+		{Name: "permissions.view", Module: "Permission Management", Category: "Permissions", Description: "View permissions list and details", Actions: `["read"]`},
+		{Name: "permissions.create", Module: "Permission Management", Category: "Permissions", Description: "Create new permissions", Actions: `["create"]`},
+		{Name: "permissions.update", Module: "Permission Management", Category: "Permissions", Description: "Update existing permissions", Actions: `["update"]`},
+		{Name: "permissions.delete", Module: "Permission Management", Category: "Permissions", Description: "Delete permissions", Actions: `["delete"]`},
+
+		// System & Dashboard
+		{Name: "dashboard.view", Module: "Dashboard", Category: "Analytics", Description: "Access dashboard and reports", Actions: `["read"]`},
+		{Name: "settings.view", Module: "System Settings", Category: "Settings", Description: "View system settings", Actions: `["read"]`},
+		{Name: "settings.update", Module: "System Settings", Category: "Settings", Description: "Update system settings", Actions: `["update"]`},
+		{Name: "profile.view", Module: "Profile Management", Category: "Account", Description: "View own profile", Actions: `["read"]`},
+		{Name: "profile.update", Module: "Profile Management", Category: "Account", Description: "Update own profile", Actions: `["update"]`},
 	}
 
 	for _, perm := range permissions {
@@ -69,12 +104,16 @@ func SeedData() error {
 	// Assign all permissions to admin role
 	var allPermissions []models.Permission
 	DB.Find(&allPermissions)
-	DB.Model(&adminRole).Association("Permissions").Replace(allPermissions)
+	if len(allPermissions) > 0 {
+		DB.Model(&adminRole).Association("Permissions").Replace(allPermissions)
+	}
 
-	// Assign read permissions to user role
-	var readPermissions []models.Permission
-	DB.Where("action = ?", "read").Find(&readPermissions)
-	DB.Model(&userRole).Association("Permissions").Replace(readPermissions)
+	// Assign limited permissions to user role
+	var limitedPermissions []models.Permission
+	DB.Where("name IN ?", []string{"profile.view", "profile.update", "dashboard.view"}).Find(&limitedPermissions)
+	if len(limitedPermissions) > 0 {
+		DB.Model(&userRole).Association("Permissions").Replace(limitedPermissions)
+	}
 
 	// Create default admin user
 	var adminUser models.User

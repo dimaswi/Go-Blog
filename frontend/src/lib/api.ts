@@ -39,7 +39,10 @@ api.interceptors.response.use(
 export interface Permission {
   id: number;
   name: string;
+  module: string;
+  category: string;
   description: string;
+  actions: string; // JSON string containing array of actions
 }
 
 export interface Role {

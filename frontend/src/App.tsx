@@ -2,13 +2,13 @@ import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './lib/store';
 import { AppLayout } from './components/layout/AppLayout';
-import { ProtectedRoute as PermissionGuard } from './components/ProtectedRoute';
+import { ProtectedRoute as PermissionGuard } from './components/protected-route';
 import { Toaster } from '@/components/ui/toaster';
 import { Loader2 } from 'lucide-react';
 
 // Lazy load pages
-const LoginPage = lazy(() => import('./pages/LoginPage'));
-const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const LoginPage = lazy(() => import('./pages/auth/login'));
+const DashboardPage = lazy(() => import('./pages/dashboard/index'));
 const AccountPage = lazy(() => import('./pages/account/index'));
 const SettingsPage = lazy(() => import('./pages/settings/index'));
 
@@ -108,7 +108,7 @@ function App() {
           <Route path="/permissions" element={<ProtectedRoute><PermissionsIndex /></ProtectedRoute>} />
           <Route path="/permissions/create" element={
             <ProtectedRoute>
-              <PermissionGuard permission="roles.create">
+              <PermissionGuard permission="permissions.create">
                 <PermissionsCreate />
               </PermissionGuard>
             </ProtectedRoute>
@@ -116,7 +116,7 @@ function App() {
           <Route path="/permissions/:id" element={<ProtectedRoute><PermissionsShow /></ProtectedRoute>} />
           <Route path="/permissions/:id/edit" element={
             <ProtectedRoute>
-              <PermissionGuard permission="roles.update">
+              <PermissionGuard permission="permissions.update">
                 <PermissionsEdit />
               </PermissionGuard>
             </ProtectedRoute>

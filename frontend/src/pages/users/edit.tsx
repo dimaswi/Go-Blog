@@ -88,100 +88,105 @@ export default function UserEdit() {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-6">
-      <div className="flex items-center gap-4">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => navigate('/users')}
-          className="h-9 w-9"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Edit User</h1>
-          <p className="text-sm text-muted-foreground">Update user information</p>
-        </div>
-      </div>
-
-      <Card className="shadow-md">
-        <CardHeader className="border-b bg-muted/50">
-          <CardTitle className="text-base font-semibold">User Information</CardTitle>
-          <CardDescription>Modify user details below</CardDescription>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2 group">
-              <Label htmlFor="full_name" className="text-xs font-medium flex items-center gap-2">
-                <User className="h-3.5 w-3.5 text-muted-foreground" />
-                Full Name
-              </Label>
-              <Input
-                id="full_name"
-                required
-                placeholder="Enter full name"
-                value={formData.full_name}
-                onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                className="h-9 text-sm transition-all focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-
-            <div className="space-y-2 group">
-              <Label htmlFor="role_id" className="text-xs font-medium flex items-center gap-2">
-                <Shield className="h-3.5 w-3.5 text-muted-foreground" />
-                Role
-              </Label>
-              <select
-                id="role_id"
-                required
-                value={formData.role_id}
-                onChange={(e) => setFormData({ ...formData, role_id: e.target.value })}
-                className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 hover:border-muted-foreground/50"
-              >
-                {roles.map((role) => (
-                  <option key={role.id} value={role.id}>
-                    {role.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/20 hover:bg-muted/30 transition-colors">
-              <div className="space-y-0.5">
-                <Label htmlFor="is_active" className="text-sm font-medium cursor-pointer">
-                  Account Status
-                </Label>
-                <p className="text-xs text-muted-foreground">
-                  {formData.is_active ? 'Account is active' : 'Account is inactive'}
-                </p>
+      <div className="grid gap-4">
+        <Card className="shadow-md">
+          <CardHeader className="border-b bg-muted/50">
+            <div className="flex items-center gap-4">
+              <div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => navigate("/users")}
+                  className="h-9 w-9"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
               </div>
-              <Switch
-                id="is_active"
-                checked={formData.is_active}
-                onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
-              />
+              <div>
+                <CardTitle className="text-base font-semibold">
+                  Informasi User
+                </CardTitle>
+                <CardDescription>
+                  Update detail informasi user
+                </CardDescription>
+              </div>
             </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="full_name" className="text-xs font-medium flex items-center gap-2">
+                  <User className="h-3.5 w-3.5 text-muted-foreground" />
+                  Nama Lengkap
+                </Label>
+                <Input
+                  id="full_name"
+                  required
+                  placeholder="Masukkan nama lengkap"
+                  value={formData.full_name}
+                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                  className="h-9 text-sm"
+                />
+              </div>
 
-            <div className="flex gap-2 justify-end pt-4 border-t">
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => navigate('/users')}
-                className="h-9 hover:bg-accent transition-all"
-              >
-                Cancel
-              </Button>
-              <Button 
-                type="submit" 
-                disabled={loading}
-                className="h-9 min-w-[120px] hover:scale-105 transition-all"
-              >
-                {loading && <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />}
-                Update User
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+              <div className="space-y-2">
+                <Label htmlFor="role_id" className="text-xs font-medium flex items-center gap-2">
+                  <Shield className="h-3.5 w-3.5 text-muted-foreground" />
+                  Role
+                </Label>
+                <select
+                  id="role_id"
+                  required
+                  value={formData.role_id}
+                  onChange={(e) => setFormData({ ...formData, role_id: e.target.value })}
+                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {roles.map((role) => (
+                    <option key={role.id} value={role.id}>
+                      {role.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                  <Label htmlFor="is_active" className="text-xs font-medium cursor-pointer">
+                    Status Akun
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    {formData.is_active ? 'Akun aktif' : 'Akun tidak aktif'}
+                  </p>
+                </div>
+                <Switch
+                  id="is_active"
+                  checked={formData.is_active}
+                  onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
+                />
+              </div>
+
+              <div className="flex gap-3 justify-end">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => navigate('/users')}
+                  className="h-9 text-sm"
+                >
+                  Batal
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={loading}
+                  className="h-9 text-sm min-w-24"
+                >
+                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Update
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

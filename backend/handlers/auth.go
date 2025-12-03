@@ -39,7 +39,10 @@ type RoleResponse struct {
 type PermissionResponse struct {
 	ID          uint   `json:"id"`
 	Name        string `json:"name"`
+	Module      string `json:"module"`
+	Category    string `json:"category"`
 	Description string `json:"description"`
+	Actions     string `json:"actions"`
 }
 
 func Login(c *gin.Context) {
@@ -96,7 +99,10 @@ func Login(c *gin.Context) {
 				roleResp.Permissions[i] = PermissionResponse{
 					ID:          perm.ID,
 					Name:        perm.Name,
+					Module:      perm.Module,
+					Category:    perm.Category,
 					Description: perm.Description,
+					Actions:     perm.Actions,
 				}
 			}
 		}
@@ -116,12 +122,38 @@ func GetProfile(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"id":        user.ID,
-		"email":     user.Email,
-		"username":  user.Username,
-		"full_name": user.FullName,
-		"is_active": user.IsActive,
-		"role":      user.Role,
-	})
+	response := UserResponse{
+		ID:       user.ID,
+		Email:    user.Email,
+		Username: user.Username,
+		FullName: user.FullName,
+		IsActive: user.IsActive,
+		RoleID:   user.RoleID,
+	}
+
+	if user.Role.ID > 0 {
+		roleResp := &RoleResponse{
+			ID:          user.Role.ID,
+			Name:        user.Role.Name,
+			Description: user.Role.Description,
+		}
+
+		if len(user.Role.Permissions) > 0 {
+			roleResp.Permissions = make([]PermissionResponse, len(user.Role.Permissions))
+			for i, perm := range user.Role.Permissions {
+				roleResp.Permissions[i] = PermissionResponse{
+					ID:          perm.ID,
+					Name:        perm.Name,
+					Module:      perm.Module,
+					Category:    perm.Category,
+					Description: perm.Description,
+					Actions:     perm.Actions,
+				}
+			}
+		}
+
+		response.Role = roleResp
+	}
+
+	c.JSON(http.StatusOK, response)
 }

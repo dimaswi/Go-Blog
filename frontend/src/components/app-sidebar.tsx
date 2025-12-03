@@ -28,7 +28,6 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar';
 import {
@@ -50,16 +49,16 @@ import {
 } from '@/components/ui/tooltip';
 
 const menuItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, permission: null },
+  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, permission: 'dashboard.view' },
   { 
     path: '/users', 
     label: 'User Management', 
     icon: Users,
-    permission: 'users.read',
+    permission: 'users.view',
     submenu: [
-      { path: '/users', label: 'Users', icon: Users, permission: 'users.read' },
-      { path: '/roles', label: 'Roles', icon: Shield, permission: 'roles.read' },
-      { path: '/permissions', label: 'Permissions', icon: Lock, permission: 'roles.read' },
+      { path: '/users', label: 'Users', icon: Users, permission: 'users.view' },
+      { path: '/roles', label: 'Roles', icon: Shield, permission: 'roles.view' },
+      { path: '/permissions', label: 'Permissions', icon: Lock, permission: 'permissions.view' },
     ]
   },
 ];
@@ -109,7 +108,7 @@ export function AppSidebar() {
   });
 
   return (
-    <Sidebar collapsible="icon" className="border-r-0">
+    <Sidebar collapsible="icon" className="border-r-0" variant="inset">
       <SidebarHeader className="">
         <SidebarMenu>
           <SidebarMenuItem>
@@ -300,7 +299,6 @@ export function AppSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
 }

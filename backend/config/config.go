@@ -12,7 +12,7 @@ type Config struct {
 
 func Load() *Config {
 	return &Config{
-		DatabaseDSN: getEnv("DATABASE_DSN", "host=localhost user=simrs password=simrs123 dbname=simrs port=5432 sslmode=disable"),
+		DatabaseDSN: getEnv("DATABASE_DSN", "host=localhost user=starter password=starter123 dbname=starter port=5434 sslmode=disable"),
 		JWTSecret:   getEnv("JWT_SECRET", "your-secret-key-change-in-production"),
 		ServerPort:  getEnv("SERVER_PORT", "8080"),
 	}

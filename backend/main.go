@@ -62,25 +62,26 @@ func main() {
 			protected.PUT("/settings", handlers.UpdateSettings)
 
 			// Users routes (with RBAC)
-			protected.GET("/users", middleware.RequirePermission("users.read"), handlers.GetUsers)
-			protected.GET("/users/:id", middleware.RequirePermission("users.read"), handlers.GetUser)
+			protected.GET("/users", middleware.RequirePermission("users.view"), handlers.GetUsers)
+			protected.GET("/users/:id", middleware.RequirePermission("users.view"), handlers.GetUser)
 			protected.POST("/users", middleware.RequirePermission("users.create"), handlers.CreateUser)
 			protected.PUT("/users/:id", middleware.RequirePermission("users.update"), handlers.UpdateUser)
 			protected.DELETE("/users/:id", middleware.RequirePermission("users.delete"), handlers.DeleteUser)
 
 			// Roles routes (with RBAC)
-			protected.GET("/roles", middleware.RequirePermission("roles.read"), handlers.GetRoles)
-			protected.GET("/roles/:id", middleware.RequirePermission("roles.read"), handlers.GetRole)
+			protected.GET("/roles", middleware.RequirePermission("roles.view"), handlers.GetRoles)
+			protected.GET("/roles/:id", middleware.RequirePermission("roles.view"), handlers.GetRole)
 			protected.POST("/roles", middleware.RequirePermission("roles.create"), handlers.CreateRole)
 			protected.PUT("/roles/:id", middleware.RequirePermission("roles.update"), handlers.UpdateRole)
 			protected.DELETE("/roles/:id", middleware.RequirePermission("roles.delete"), handlers.DeleteRole)
 
 			// Permissions routes
-			protected.GET("/permissions", middleware.RequirePermission("roles.read"), handlers.GetPermissions)
-			protected.GET("/permissions/:id", middleware.RequirePermission("roles.read"), handlers.GetPermission)
-			protected.POST("/permissions", middleware.RequirePermission("roles.create"), handlers.CreatePermission)
-			protected.PUT("/permissions/:id", middleware.RequirePermission("roles.update"), handlers.UpdatePermission)
-			protected.DELETE("/permissions/:id", middleware.RequirePermission("roles.delete"), handlers.DeletePermission)
+			protected.GET("/permissions", middleware.RequirePermission("permissions.view"), handlers.GetPermissions)
+			protected.GET("/permissions/by-module", middleware.RequirePermission("permissions.view"), handlers.GetPermissionsByModule)
+			protected.GET("/permissions/:id", middleware.RequirePermission("permissions.view"), handlers.GetPermission)
+			protected.POST("/permissions", middleware.RequirePermission("permissions.create"), handlers.CreatePermission)
+			protected.PUT("/permissions/:id", middleware.RequirePermission("permissions.update"), handlers.UpdatePermission)
+			protected.DELETE("/permissions/:id", middleware.RequirePermission("permissions.delete"), handlers.DeletePermission)
 		}
 	}
 
