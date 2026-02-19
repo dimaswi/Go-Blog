@@ -2,10 +2,12 @@ package main
 
 import (
 	"log"
+	"os"
 	"starter/backend/config"
 	"starter/backend/database"
 	"starter/backend/handlers"
 	"starter/backend/middleware"
+	"strings"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -37,23 +39,37 @@ func main() {
 	// Setup Gin router
 	r := gin.Default()
 
-	// Serve static files for uploads
-	r.Static("/uploads", "./uploads")
-
-	// CORS middleware
+	// CORS middleware (must be before Static so uploads also get CORS headers)
+	allowedOrigins := []string{"http://localhost:5173", "http://localhost:3000", "http://localhost:3001"}
+	if origins := os.Getenv("ALLOWED_ORIGINS"); origins != "" {
+		allowedOrigins = strings.Split(origins, ",")
+	}
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:3000"},
+		AllowOrigins:     allowedOrigins,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
 
+	// Serve static files for uploads
+	r.Static("/uploads", "./uploads")
+
 	// Public routes
 	api := r.Group("/api")
 	{
 		api.POST("/auth/login", handlers.Login)
-		api.GET("/settings", handlers.GetSettings) // Public access to settings
+		api.GET("/settings", handlers.GetSettings)          // Public access to settings
+		api.POST("/contact", handlers.CreateContactMessage) // Public contact form
+
+		// Public blog/portfolio routes (for NextJS frontend)
+		api.GET("/public/blogs", handlers.GetPublishedBlogs)
+		api.GET("/public/blogs/:slug", handlers.GetBlogBySlug)
+		api.GET("/public/blog-categories", handlers.GetBlogCategories)
+		api.GET("/public/blog-tags", handlers.GetBlogTags)
+		api.GET("/public/portfolios", handlers.GetPublishedPortfolios)
+		api.GET("/public/portfolios/:slug", handlers.GetPortfolioBySlug)
+		api.GET("/public/portfolio-categories", handlers.GetPortfolioCategories)
 
 		// Protected routes
 		protected := api.Group("")
@@ -86,6 +102,46 @@ func main() {
 			protected.POST("/permissions", middleware.RequirePermission("permissions.create"), handlers.CreatePermission)
 			protected.PUT("/permissions/:id", middleware.RequirePermission("permissions.update"), handlers.UpdatePermission)
 			protected.DELETE("/permissions/:id", middleware.RequirePermission("permissions.delete"), handlers.DeletePermission)
+
+			// Blog routes (with RBAC)
+			protected.GET("/blogs", middleware.RequirePermission("blogs.view"), handlers.GetBlogs)
+			protected.GET("/blogs/:id", middleware.RequirePermission("blogs.view"), handlers.GetBlog)
+			protected.POST("/blogs", middleware.RequirePermission("blogs.create"), handlers.CreateBlog)
+			protected.PUT("/blogs/:id", middleware.RequirePermission("blogs.update"), handlers.UpdateBlog)
+			protected.DELETE("/blogs/:id", middleware.RequirePermission("blogs.delete"), handlers.DeleteBlog)
+			protected.POST("/blogs/upload", middleware.RequirePermission("blogs.create"), handlers.UploadBlogImage)
+
+			// Blog Categories
+			protected.GET("/blog-categories", middleware.RequirePermission("blogs.view"), handlers.GetBlogCategories)
+			protected.GET("/blog-categories/:id", middleware.RequirePermission("blogs.view"), handlers.GetBlogCategory)
+			protected.POST("/blog-categories", middleware.RequirePermission("blogs.create"), handlers.CreateBlogCategory)
+			protected.PUT("/blog-categories/:id", middleware.RequirePermission("blogs.update"), handlers.UpdateBlogCategory)
+			protected.DELETE("/blog-categories/:id", middleware.RequirePermission("blogs.delete"), handlers.DeleteBlogCategory)
+
+			// Blog Tags
+			protected.GET("/blog-tags", middleware.RequirePermission("blogs.view"), handlers.GetBlogTags)
+			protected.POST("/blog-tags", middleware.RequirePermission("blogs.create"), handlers.CreateBlogTag)
+			protected.DELETE("/blog-tags/:id", middleware.RequirePermission("blogs.delete"), handlers.DeleteBlogTag)
+
+			// Portfolio routes (with RBAC)
+			protected.GET("/portfolios", middleware.RequirePermission("portfolios.view"), handlers.GetPortfolios)
+			protected.GET("/portfolios/:id", middleware.RequirePermission("portfolios.view"), handlers.GetPortfolio)
+			protected.POST("/portfolios", middleware.RequirePermission("portfolios.create"), handlers.CreatePortfolio)
+			protected.PUT("/portfolios/:id", middleware.RequirePermission("portfolios.update"), handlers.UpdatePortfolio)
+			protected.DELETE("/portfolios/:id", middleware.RequirePermission("portfolios.delete"), handlers.DeletePortfolio)
+			protected.POST("/portfolios/upload", middleware.RequirePermission("portfolios.create"), handlers.UploadPortfolioImage)
+
+			// Portfolio Categories
+			protected.GET("/portfolio-categories", middleware.RequirePermission("portfolios.view"), handlers.GetPortfolioCategories)
+			protected.POST("/portfolio-categories", middleware.RequirePermission("portfolios.create"), handlers.CreatePortfolioCategory)
+			protected.PUT("/portfolio-categories/:id", middleware.RequirePermission("portfolios.update"), handlers.UpdatePortfolioCategory)
+			protected.DELETE("/portfolio-categories/:id", middleware.RequirePermission("portfolios.delete"), handlers.DeletePortfolioCategory)
+
+			// Contact Messages
+			protected.GET("/messages", handlers.GetContactMessages)
+			protected.GET("/messages/:id", handlers.GetContactMessage)
+			protected.PUT("/messages/:id/read", handlers.MarkContactMessage)
+			protected.DELETE("/messages/:id", handlers.DeleteContactMessage)
 		}
 	}
 

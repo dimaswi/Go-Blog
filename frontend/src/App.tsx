@@ -30,6 +30,21 @@ const PermissionsCreate = lazy(() => import('./pages/permissions/create'));
 const PermissionsEdit = lazy(() => import('./pages/permissions/edit'));
 const PermissionsShow = lazy(() => import('./pages/permissions/show'));
 
+// Blogs
+const BlogsIndex = lazy(() => import('./pages/blogs/index'));
+const BlogsCreate = lazy(() => import('./pages/blogs/create'));
+const BlogsEdit = lazy(() => import('./pages/blogs/edit'));
+const BlogsShow = lazy(() => import('./pages/blogs/show'));
+
+// Portfolios
+const PortfoliosIndex = lazy(() => import('./pages/portfolios/index'));
+const PortfoliosCreate = lazy(() => import('./pages/portfolios/create'));
+const PortfoliosEdit = lazy(() => import('./pages/portfolios/edit'));
+const PortfoliosShow = lazy(() => import('./pages/portfolios/show'));
+
+// Messages
+const MessagesIndex = lazy(() => import('./pages/messages/index'));
+
 function LoadingFallback() {
   return (
     <div className="flex items-center justify-center h-screen">
@@ -122,6 +137,37 @@ function App() {
             </ProtectedRoute>
           } />
           
+          {/* Blogs */}
+          <Route path="/blogs" element={<ProtectedRoute><BlogsIndex /></ProtectedRoute>} />
+          <Route path="/blogs/create" element={
+            <ProtectedRoute>
+              <PermissionGuard permission="blogs.create"><BlogsCreate /></PermissionGuard>
+            </ProtectedRoute>
+          } />
+          <Route path="/blogs/:id" element={<ProtectedRoute><BlogsShow /></ProtectedRoute>} />
+          <Route path="/blogs/:id/edit" element={
+            <ProtectedRoute>
+              <PermissionGuard permission="blogs.update"><BlogsEdit /></PermissionGuard>
+            </ProtectedRoute>
+          } />
+
+          {/* Portfolios */}
+          <Route path="/portfolios" element={<ProtectedRoute><PortfoliosIndex /></ProtectedRoute>} />
+          <Route path="/portfolios/create" element={
+            <ProtectedRoute>
+              <PermissionGuard permission="portfolios.create"><PortfoliosCreate /></PermissionGuard>
+            </ProtectedRoute>
+          } />
+          <Route path="/portfolios/:id" element={<ProtectedRoute><PortfoliosShow /></ProtectedRoute>} />
+          <Route path="/portfolios/:id/edit" element={
+            <ProtectedRoute>
+              <PermissionGuard permission="portfolios.update"><PortfoliosEdit /></PermissionGuard>
+            </ProtectedRoute>
+          } />
+
+          {/* Messages */}
+          <Route path="/messages" element={<ProtectedRoute><MessagesIndex /></ProtectedRoute>} />
+
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </Suspense>

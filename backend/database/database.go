@@ -24,11 +24,17 @@ func Connect(dsn string) error {
 func Migrate() error {
 	// Auto-migrate all models with proper order for foreign key dependencies
 	err := DB.AutoMigrate(
-		&models.Role{},           // First, roles
-		&models.Permission{},     // Then permissions
-		&models.RolePermission{}, // Junction table
-		&models.User{},           // Then users (depends on roles)
-		&models.Setting{},        // Finally settings
+		&models.Role{},              // First, roles
+		&models.Permission{},        // Then permissions
+		&models.RolePermission{},    // Junction table
+		&models.User{},              // Then users (depends on roles)
+		&models.Setting{},           // Settings
+		&models.BlogCategory{},      // Blog categories
+		&models.BlogTag{},           // Blog tags
+		&models.Blog{},              // Blog posts
+		&models.PortfolioCategory{}, // Portfolio categories
+		&models.Portfolio{},         // Portfolio items
+		&models.ContactMessage{},    // Contact form messages
 	)
 
 	if err != nil {
@@ -42,6 +48,12 @@ func Migrate() error {
 // CleanMigrate drops all tables and recreates them for fresh database structure
 func CleanMigrate() error {
 	// Drop tables in reverse order to handle foreign key constraints
+	DB.Exec("DROP TABLE IF EXISTS blog_post_tags CASCADE")
+	DB.Exec("DROP TABLE IF EXISTS blogs CASCADE")
+	DB.Exec("DROP TABLE IF EXISTS blog_categories CASCADE")
+	DB.Exec("DROP TABLE IF EXISTS blog_tags CASCADE")
+	DB.Exec("DROP TABLE IF EXISTS portfolios CASCADE")
+	DB.Exec("DROP TABLE IF EXISTS portfolio_categories CASCADE")
 	DB.Exec("DROP TABLE IF EXISTS role_permissions CASCADE")
 	DB.Exec("DROP TABLE IF EXISTS users CASCADE")
 	DB.Exec("DROP TABLE IF EXISTS permissions CASCADE")
@@ -75,6 +87,18 @@ func SeedData() error {
 		{Name: "permissions.create", Module: "Permission Management", Category: "Permissions", Description: "Create new permissions", Actions: `["create"]`},
 		{Name: "permissions.update", Module: "Permission Management", Category: "Permissions", Description: "Update existing permissions", Actions: `["update"]`},
 		{Name: "permissions.delete", Module: "Permission Management", Category: "Permissions", Description: "Delete permissions", Actions: `["delete"]`},
+
+		// Blog Management
+		{Name: "blogs.view", Module: "Blog Management", Category: "Blogs", Description: "View blog posts", Actions: `["read"]`},
+		{Name: "blogs.create", Module: "Blog Management", Category: "Blogs", Description: "Create blog posts", Actions: `["create"]`},
+		{Name: "blogs.update", Module: "Blog Management", Category: "Blogs", Description: "Update blog posts", Actions: `["update"]`},
+		{Name: "blogs.delete", Module: "Blog Management", Category: "Blogs", Description: "Delete blog posts", Actions: `["delete"]`},
+
+		// Portfolio Management
+		{Name: "portfolios.view", Module: "Portfolio Management", Category: "Portfolios", Description: "View portfolios", Actions: `["read"]`},
+		{Name: "portfolios.create", Module: "Portfolio Management", Category: "Portfolios", Description: "Create portfolios", Actions: `["create"]`},
+		{Name: "portfolios.update", Module: "Portfolio Management", Category: "Portfolios", Description: "Update portfolios", Actions: `["update"]`},
+		{Name: "portfolios.delete", Module: "Portfolio Management", Category: "Portfolios", Description: "Delete portfolios", Actions: `["delete"]`},
 
 		// System & Dashboard
 		{Name: "dashboard.view", Module: "Dashboard", Category: "Analytics", Description: "Access dashboard and reports", Actions: `["read"]`},

@@ -11,6 +11,9 @@ import {
   Settings,
   ChevronsUpDown,
   User,
+  FileText,
+  Briefcase,
+  Inbox,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/store';
 import { usePermission } from '@/hooks/usePermission';
@@ -54,6 +57,23 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, permission: 'dashboard.view' },
+  {
+    path: '/blogs',
+    label: 'Blog',
+    icon: FileText,
+    permission: 'blogs.view',
+  },
+  {
+    path: '/portfolios',
+    label: 'Portfolio',
+    icon: Briefcase,
+    permission: 'portfolios.view',
+  },
+  {
+    path: '/messages',
+    label: 'Messages',
+    icon: Inbox,
+  },
   {
     path: '/users',
     label: 'User Management',
