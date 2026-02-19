@@ -40,9 +40,15 @@ func main() {
 	r := gin.Default()
 
 	// CORS middleware (must be before Static so uploads also get CORS headers)
-	allowedOrigins := []string{"http://localhost:5173", "http://localhost:3000", "http://localhost:3001"}
+	allowedOrigins := []string{"http://localhost:5173", "http://localhost:3000", "http://localhost:3001", "http://147.93.104.139:2221", "http://147.93.104.139:2222"}
 	if origins := os.Getenv("ALLOWED_ORIGINS"); origins != "" {
-		allowedOrigins = strings.Split(origins, ",")
+		parts := strings.Split(origins, ",")
+		allowedOrigins = make([]string, 0, len(parts))
+		for _, o := range parts {
+			if trimmed := strings.TrimSpace(o); trimmed != "" {
+				allowedOrigins = append(allowedOrigins, trimmed)
+			}
+		}
 	}
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     allowedOrigins,
