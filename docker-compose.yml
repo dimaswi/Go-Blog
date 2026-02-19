@@ -38,7 +38,7 @@ services:
       DATABASE_DSN: "host=postgres user=${DB_USER:-dimas} password=${DB_PASSWORD:-dimas123} dbname=${DB_NAME:-dimaswysnu} port=5432 sslmode=disable"
       JWT_SECRET: ${JWT_SECRET:-your-secret-key-change-in-production}
       SERVER_PORT: "8080"
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:2220,http://localhost:2221}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-https://dimaswysnu.com,http://147.93.104.139:2221}
     volumes:
       - uploads_data:/root/uploads
     depends_on:
@@ -71,13 +71,15 @@ services:
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://backend:8080/api}
-        NEXT_PUBLIC_UPLOAD_URL: ${NEXT_PUBLIC_UPLOAD_URL:-http://localhost:2222}
-    container_name: blog
+        NEXT_PUBLIC_UPLOAD_URL: ${NEXT_PUBLIC_UPLOAD_URL:-http://147.93.104.139:2222}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://dimaswysnu.com}
+    container_name: pos-blog
     ports:
       - "2220:3000"
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://backend:8080/api}
-      NEXT_PUBLIC_UPLOAD_URL: ${NEXT_PUBLIC_UPLOAD_URL:-http://localhost:2222}
+      NEXT_PUBLIC_UPLOAD_URL: ${NEXT_PUBLIC_UPLOAD_URL:-http://147.93.104.139:2222}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://dimaswysnu.com}
     depends_on:
       - backend
     networks:
