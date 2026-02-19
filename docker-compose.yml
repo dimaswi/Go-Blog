@@ -1,37 +1,41 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
-    container_name: pos-postgres
+    container_name: blog-postgres
     ports:
       - "2223:5432"
     environment:
       POSTGRES_USER: ${DB_USER:-dimas}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-dimas123}
-      POSTGRES_DB: ${DB_NAME:-pos}
+      POSTGRES_DB: ${DB_NAME:-dimaswysnu}
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-dimas} -d ${DB_NAME:-pos}"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${DB_USER:-dimas} -d ${DB_NAME:-dimaswysnu}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - pos-network
+      - blog-network
 
   # Backend API (Go)
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: pos-backend
+    container_name: blog-backend
     ports:
       - "2222:8080"
     environment:
-      DATABASE_DSN: "host=postgres user=${DB_USER:-dimas} password=${DB_PASSWORD:-dimas123} dbname=${DB_NAME:-pos} port=5432 sslmode=disable"
+      DATABASE_DSN: "host=postgres user=${DB_USER:-dimas} password=${DB_PASSWORD:-dimas123} dbname=${DB_NAME:-dimaswysnu} port=5432 sslmode=disable"
       JWT_SECRET: ${JWT_SECRET:-your-secret-key-change-in-production}
       SERVER_PORT: "8080"
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:2220,http://localhost:2221}
@@ -41,7 +45,7 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - pos-network
+      - blog-network
     restart: unless-stopped
 
   # Frontend (React Admin)
@@ -51,13 +55,13 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_API_URL: ${VITE_API_URL:-/api}
-    container_name: pos-frontend
+    container_name: blog-admin
     ports:
       - "2221:80"
     depends_on:
-      - backend
+      - blog-backend
     networks:
-      - pos-network
+      - blog-network
     restart: unless-stopped
 
   # Blog (NextJS)
@@ -68,39 +72,22 @@ services:
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://backend:8080/api}
         NEXT_PUBLIC_UPLOAD_URL: ${NEXT_PUBLIC_UPLOAD_URL:-http://localhost:2222}
-    container_name: pos-blog
+    container_name: blog
     ports:
       - "2220:3000"
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://backend:8080/api}
       NEXT_PUBLIC_UPLOAD_URL: ${NEXT_PUBLIC_UPLOAD_URL:-http://localhost:2222}
     depends_on:
-      - backend
+      - blog-backend
     networks:
-      - pos-network
+      - blog-network
     restart: unless-stopped
-
-  # Cloudflare Tunnel (opsional — hapus/comment block ini jika tidak pakai)
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    container_name: pos-cloudflared
-    command: tunnel run
-    environment:
-      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:-}
-    depends_on:
-      - frontend
-      - blog
-      - backend
-    networks:
-      - pos-network
-    restart: unless-stopped
-    profiles:
-      - cloudflare
 
 volumes:
   postgres_data:
   uploads_data:
 
 networks:
-  pos-network:
+  blog-network:
     driver: bridge
