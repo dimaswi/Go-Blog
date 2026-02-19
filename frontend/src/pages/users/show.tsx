@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { usersApi } from '@/lib/api';
@@ -137,14 +136,12 @@ export default function UserShow() {
           </div>
         </div>
 
-        {/* Single Card with Sections */}
-        <Card>
-          <CardContent className="p-6">
+        <div>
             {/* User Information Section */}
             <div className="mb-8">
-              <CardTitle className="text-base text-muted-foreground font-normal mb-4">
+              <h3 className="text-base text-muted-foreground font-normal mb-4">
                 INFORMASI USER
-              </CardTitle>
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div>
                   <label className="text-sm text-muted-foreground">Nama Lengkap</label>
@@ -174,9 +171,9 @@ export default function UserShow() {
 
             {/* Role Information Section */}
             <div className="my-8">
-              <CardTitle className="text-base text-muted-foreground font-normal mb-4">
+              <h3 className="text-base text-muted-foreground font-normal mb-4">
                 INFORMASI ROLE
-              </CardTitle>
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div>
                   <label className="text-sm text-muted-foreground">Role</label>
@@ -201,9 +198,9 @@ export default function UserShow() {
 
             {/* System Information Section */}
             <div className="my-8">
-              <CardTitle className="text-base text-muted-foreground font-normal mb-4">
+              <h3 className="text-base text-muted-foreground font-normal mb-4">
                 INFORMASI SISTEM
-              </CardTitle>
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div>
                   <label className="text-sm text-muted-foreground">ID User</label>
@@ -241,9 +238,9 @@ export default function UserShow() {
               <>
                 <hr className="border-border/50" />
                 <div className="mt-8">
-                  <CardTitle className="text-base text-muted-foreground font-normal mb-4">
+                  <h3 className="text-base text-muted-foreground font-normal mb-4">
                     DAFTAR PERMISSION
-                  </CardTitle>
+                  </h3>
                   <div className="space-y-2">
                     {user.role.permissions.map((perm: any, index: number) => (
                       <div 
@@ -260,8 +257,7 @@ export default function UserShow() {
                 </div>
               </>
             )}
-          </CardContent>
-        </Card>
+        </div>
       </div>
 
       <ConfirmDialog

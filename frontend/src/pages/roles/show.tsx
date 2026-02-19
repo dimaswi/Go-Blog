@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { setPageTitle } from '@/lib/page-title';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -137,14 +136,12 @@ export default function RoleShow() {
           </div>
         </div>
 
-        {/* Single Card with Sections */}
-        <Card>
-          <CardContent className="p-6">
+        <div>
             {/* Role Information Section */}
             <div className="mb-8">
-              <CardTitle className="text-base text-muted-foreground font-normal mb-4">
+              <h3 className="text-base text-muted-foreground font-normal mb-4">
                 INFORMASI ROLE
-              </CardTitle>
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div>
                   <label className="text-sm text-muted-foreground">Nama Role</label>
@@ -167,9 +164,9 @@ export default function RoleShow() {
 
             {/* System Information Section */}
             <div className="my-8">
-              <CardTitle className="text-base text-muted-foreground font-normal mb-4">
+              <h3 className="text-base text-muted-foreground font-normal mb-4">
                 INFORMASI SISTEM
-              </CardTitle>
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div>
                   <label className="text-sm text-muted-foreground">ID Role</label>
@@ -205,9 +202,9 @@ export default function RoleShow() {
             {/* Permissions Section */}
             <hr className="border-border/50" />
             <div className="mt-8">
-              <CardTitle className="text-base text-muted-foreground font-normal mb-4">
+              <h3 className="text-base text-muted-foreground font-normal mb-4">
                 DAFTAR PERMISSION
-              </CardTitle>
+              </h3>
               {role.permissions && role.permissions.length > 0 ? (
                 <div className="space-y-2">
                   {role.permissions.map((perm: any, index: number) => (
@@ -243,8 +240,7 @@ export default function RoleShow() {
                 </div>
               )}
             </div>
-          </CardContent>
-        </Card>
+        </div>
       </div>
 
       <ConfirmDialog

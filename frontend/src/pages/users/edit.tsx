@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -88,32 +87,21 @@ export default function UserEdit() {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-6">
-      <div className="grid gap-4">
-        <Card className="shadow-md">
-          <CardHeader className="border-b bg-muted/50">
-            <div className="flex items-center gap-4">
-              <div>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => navigate("/users")}
-                  className="h-9 w-9"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </Button>
-              </div>
-              <div>
-                <CardTitle className="text-base font-semibold">
-                  Informasi User
-                </CardTitle>
-                <CardDescription>
-                  Update detail informasi user
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="flex items-center gap-4">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => navigate("/users")}
+          className="h-9 w-9"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <div>
+          <h2 className="text-base font-semibold">Informasi User</h2>
+          <p className="text-sm text-muted-foreground">Update detail informasi user</p>
+        </div>
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="full_name" className="text-xs font-medium flex items-center gap-2">
                   <User className="h-3.5 w-3.5 text-muted-foreground" />
@@ -183,10 +171,7 @@ export default function UserEdit() {
                   Update
                 </Button>
               </div>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
+      </form>
     </div>
   );
 }

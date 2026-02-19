@@ -204,8 +204,8 @@ export default function SettingsPage() {
         ) : (
           <>
             {/* Application Settings */}
-            <Card className="shadow-md">
-              <CardHeader className="border-b bg-muted/50">
+            <Card>
+              <CardHeader>
                 <CardTitle className="text-base font-semibold">
                   Application
                 </CardTitle>
@@ -277,8 +277,8 @@ export default function SettingsPage() {
             </Card>
 
             {/* Branding Settings */}
-            <Card className="shadow-md">
-              <CardHeader className="border-b bg-muted/50">
+            <Card>
+              <CardHeader>
                 <CardTitle className="text-base font-semibold">
                   Branding
                 </CardTitle>

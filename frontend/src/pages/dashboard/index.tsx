@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { useAuthStore } from '@/lib/store';
 import { usersApi, rolesApi } from '@/lib/api';
 import { Users, Shield, Activity, UserPlus, Loader2 } from 'lucide-react';
@@ -101,21 +101,14 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-1 flex-col gap-4 p-6">
       <div className="grid gap-4">
-        {/* Main Card Container */}
-        <Card className="shadow-md">
-          <CardHeader className="border-b bg-muted/50">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-base font-semibold">Dashboard</CardTitle>
-                <CardDescription>
-                  Welcome back, {user?.full_name}! Here's what's happening today.
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-6 space-y-6">
-            {/* Stats Grid */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <h2 className="text-base font-semibold">Dashboard</h2>
+          <p className="text-sm text-muted-foreground">
+            Welcome back, {user?.full_name}! Here's what's happening today.
+          </p>
+        </div>
+        {/* Stats Grid */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {dashboardStats.map((stat) => {
                 const Icon = stat.icon;
                 return (
@@ -139,19 +132,16 @@ export default function DashboardPage() {
                   </Card>
                 );
               })}
-            </div>
-          </CardContent>
-        </Card>
+        </div>
 
         {/* Two Column Layout */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
           {/* System Information */}
-          <Card className="col-span-4 shadow-md">
-            <CardHeader className="border-b bg-muted/50">
-              <CardTitle className="text-base font-semibold">System Information</CardTitle>
-              <CardDescription>Quick overview of the system</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6 space-y-4">
+          <div className="col-span-4 space-y-4">
+            <div>
+              <h3 className="text-base font-semibold">System Information</h3>
+              <p className="text-sm text-muted-foreground">Quick overview of the system</p>
+            </div>
               <div className="flex items-center gap-4 p-4 rounded-lg border bg-card">
                 <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                   <Users className="h-4 w-4 text-primary" />
@@ -191,16 +181,14 @@ export default function DashboardPage() {
                   </p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+          </div>
 
           {/* Your Profile */}
-          <Card className="col-span-3 shadow-md">
-            <CardHeader className="border-b bg-muted/50">
-              <CardTitle className="text-base font-semibold">Your Profile</CardTitle>
-              <CardDescription>Account information</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6 space-y-4">
+          <div className="col-span-3 space-y-4">
+            <div>
+              <h3 className="text-base font-semibold">Your Profile</h3>
+              <p className="text-sm text-muted-foreground">Account information</p>
+            </div>
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold">
                   {user?.full_name?.charAt(0) || 'U'}
@@ -226,8 +214,7 @@ export default function DashboardPage() {
                   <span className="text-sm font-medium">#{user?.id}</span>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+          </div>
         </div>
       </div>
     </div>

@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { DataTable } from '@/components/ui/data-table';
 import { createUserColumns } from './columns';
 import { usersApi, type User } from '@/lib/api';
@@ -97,32 +96,24 @@ export default function UsersPage() {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-6">
-      <div className="grid gap-4">
-        <Card className="shadow-md">
-          <CardHeader className="border-b bg-muted/50">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <CardTitle className="text-base font-semibold">Users</CardTitle>
-                <CardDescription>Manage system users and their permissions</CardDescription>
-              </div>
-              {hasPermission('users.create') && (
-                <Button onClick={() => navigate('/users/create')} size="sm">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add User
-                </Button>
-              )}
-            </div>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <DataTable
-              columns={columns}
-              data={users}
-              searchPlaceholder="Search users by name, username, or email..."
-              pageSize={10}
-            />
-          </CardContent>
-        </Card>
+      <div className="flex items-center justify-between">
+        <div className="space-y-1">
+          <h2 className="text-base font-semibold">Users</h2>
+          <p className="text-sm text-muted-foreground">Manage system users and their permissions</p>
+        </div>
+        {hasPermission('users.create') && (
+          <Button onClick={() => navigate('/users/create')} size="sm">
+            <Plus className="mr-2 h-4 w-4" />
+            Add User
+          </Button>
+        )}
       </div>
+      <DataTable
+        columns={columns}
+        data={users}
+        searchPlaceholder="Search users by name, username, or email..."
+        pageSize={10}
+      />
 
       <ConfirmDialog
         open={deleteDialogOpen}

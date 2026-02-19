@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { setPageTitle } from '@/lib/page-title';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -95,32 +94,21 @@ export default function RoleCreate() {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-6">
-      <div className="grid gap-4">
-        <Card className="shadow-md">
-          <CardHeader className="border-b bg-muted/50">
-            <div className="flex items-center gap-4">
-              <div>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => navigate('/roles')}
-                  className="h-9 w-9"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </Button>
-              </div>
-              <div>
-                <CardTitle className="text-base font-semibold">
-                  Informasi Role
-                </CardTitle>
-                <CardDescription>
-                  Masukkan detail informasi role baru
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="flex items-center gap-4">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => navigate('/roles')}
+          className="h-9 w-9"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <div>
+          <h2 className="text-base font-semibold">Informasi Role</h2>
+          <p className="text-sm text-muted-foreground">Masukkan detail informasi role baru</p>
+        </div>
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 gap-5">
                 <div className="space-y-2">
                   <Label
@@ -273,16 +261,13 @@ export default function RoleCreate() {
                   Simpan
                 </Button>
               </div>
-            </form>
-          </CardContent>
-        </Card>
-        
-        <PermissionDetailModal 
+      </form>
+
+      <PermissionDetailModal 
           permission={selectedPermission}
           isOpen={showPermissionModal}
           onClose={() => setShowPermissionModal(false)}
-        />
-      </div>
+      />
     </div>
   );
 }
