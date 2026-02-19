@@ -6,6 +6,18 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', 'date-fns'],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/uploads/:path*',
+        destination: `${process.env.NEXT_PUBLIC_BACKEND_INTERNAL_URL || 'http://backend:8080'}/uploads/:path*`,
+      },
+      {
+        source: '/api/:path*',
+        destination: `${process.env.NEXT_PUBLIC_BACKEND_INTERNAL_URL || 'http://backend:8080'}/api/:path*`,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
@@ -36,6 +48,7 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
     NEXT_PUBLIC_UPLOAD_URL: process.env.NEXT_PUBLIC_UPLOAD_URL || 'http://localhost:8080',
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:2220',
   },
 };
 

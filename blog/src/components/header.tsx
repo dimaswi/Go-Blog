@@ -128,7 +128,7 @@ export function Header({ settings }: HeaderProps) {
           )}
           aria-hidden={!mobileMenuOpen}
         >
-          <div className="py-4 space-y-1 border-t border-white/10">
+          <div className="py-4 space-y-1 border-t border-white/10 bg-black/95 backdrop-blur-lg rounded-b-xl -mx-6 px-6">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const active = isActive(link.href);

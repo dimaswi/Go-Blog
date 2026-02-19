@@ -55,6 +55,7 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_API_URL: ${VITE_API_URL:-/api}
+        VITE_UPLOAD_URL: ${VITE_UPLOAD_URL:-http://147.93.104.139:2222}
     container_name: blog-admin
     ports:
       - "2221:80"
@@ -71,14 +72,14 @@ services:
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://backend:8080/api}
-        NEXT_PUBLIC_UPLOAD_URL: ${NEXT_PUBLIC_UPLOAD_URL:-http://147.93.104.139:2222}
+        NEXT_PUBLIC_UPLOAD_URL: ${NEXT_PUBLIC_UPLOAD_URL:-https://dimaswysnu.com}
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://dimaswysnu.com}
     container_name: blog
     ports:
       - "2220:3000"
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://backend:8080/api}
-      NEXT_PUBLIC_UPLOAD_URL: ${NEXT_PUBLIC_UPLOAD_URL:-http://147.93.104.139:2222}
+      NEXT_PUBLIC_UPLOAD_URL: ${NEXT_PUBLIC_UPLOAD_URL:-https://dimaswysnu.com}
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://dimaswysnu.com}
     depends_on:
       - backend

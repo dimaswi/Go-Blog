@@ -5,9 +5,8 @@ import { Mail, MapPin, Send, Github, Twitter, Linkedin, Instagram, Loader2, Chec
 import { FadeInUp, PageTransition } from '@/components/motion';
 import { type SiteSettings } from '@/lib/api';
 
-// UPLOAD_URL sudah berisi public URL backend (http://IP_VPS:2222)
-// Sehingga contact form bisa dipanggil dari browser
-const API_URL = (process.env.NEXT_PUBLIC_UPLOAD_URL || 'http://localhost:8080') + '/api';
+// API call lewat Next.js rewrite (/api → backend internal) agar tidak mixed content
+const API_URL = '/api';
 
 // ── Canvas CAPTCHA ────────────────────────────────────────────────
 type CaptchaData = { a: number; b: number; op: string; answer: number };
