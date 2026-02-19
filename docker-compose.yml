@@ -59,7 +59,7 @@ services:
     ports:
       - "2221:80"
     depends_on:
-      - blog-backend
+      - backend
     networks:
       - blog-network
     restart: unless-stopped
@@ -79,7 +79,7 @@ services:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://backend:8080/api}
       NEXT_PUBLIC_UPLOAD_URL: ${NEXT_PUBLIC_UPLOAD_URL:-http://localhost:2222}
     depends_on:
-      - blog-backend
+      - backend
     networks:
       - blog-network
     restart: unless-stopped
